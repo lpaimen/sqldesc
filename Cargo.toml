@@ -14,9 +14,9 @@ include = [
 ]
 edition = "2018"
 
-[lib]
-name = "sqlparser"
-path = "src/lib.rs"
+# [lib]
+# name = "sqlparser"
+# path = "src/lib.rs"
 
 [dependencies]
 bigdecimal = { version = "0.1.0", optional = true }

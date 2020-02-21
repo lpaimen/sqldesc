@@ -20,6 +20,7 @@ use super::dialect::Dialect;
 use super::tokenizer::*;
 use std::error::Error;
 use std::fmt;
+use std::mem;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ParserError {
@@ -73,12 +74,18 @@ pub struct Parser {
     tokens: Vec<Token>,
     /// The index of the first unprocessed token in `self.tokens`
     index: usize,
+    /// Documentation for current token
+    doc: Doc,
+    /// Documentation being gathered for next token
+    next_doc: Doc,
+    /// Keep documentation over next non-whitespace token
+    keep_doc: bool,
 }
 
 impl Parser {
     /// Parse the specified tokens
     pub fn new(tokens: Vec<Token>) -> Self {
-        Parser { tokens, index: 0 }
+        Parser { tokens, index: 0, doc: Doc::new(), next_doc: Doc::new(), keep_doc: false }
     }
 
     /// Parse a SQL statement and produce an Abstract Syntax Tree (AST)
@@ -693,8 +700,19 @@ impl Parser {
         loop {
             self.index += 1;
             match self.tokens.get(self.index - 1) {
-                Some(Token::Whitespace(_)) => continue,
-                token => return token.cloned(),
+                Some(Token::Whitespace(_ws)) => {
+                    self.next_doc.parse_whitespace(_ws);
+                    continue
+                }
+                token => {
+                    if self.keep_doc {
+                        self.keep_doc = false;
+                    } else {
+                        mem::swap(&mut self.doc, &mut self.next_doc);
+                        self.next_doc = Doc::new()
+                    }
+                    return token.cloned()
+                }
             }
         }
     }
@@ -853,6 +871,7 @@ impl Parser {
 
     /// Parse a SQL CREATE statement
     pub fn parse_create(&mut self) -> Result<Statement, ParserError> {
+        self.keep_doc = true;
         if self.parse_keyword("TABLE") {
             self.parse_create_table()
         } else if self.parse_keyword("MATERIALIZED") || self.parse_keyword("VIEW") {
@@ -866,6 +885,7 @@ impl Parser {
     }
 
     pub fn parse_create_external_table(&mut self) -> Result<Statement, ParserError> {
+        let doc = self.doc;
         self.expect_keyword("TABLE")?;
         let table_name = self.parse_object_name()?;
         let (columns, constraints) = self.parse_columns()?;
@@ -883,6 +903,7 @@ impl Parser {
             external: true,
             file_format: Some(file_format),
             location: Some(location),
+            doc,
         })
     }
 
@@ -932,6 +953,7 @@ impl Parser {
     }
 
     pub fn parse_create_table(&mut self) -> Result<Statement, ParserError> {
+        let doc = self.doc;
         let table_name = self.parse_object_name()?;
         // parse optional column list (schema)
         let (columns, constraints) = self.parse_columns()?;
@@ -945,6 +967,7 @@ impl Parser {
             external: false,
             file_format: None,
             location: None,
+            doc,
         })
     }
 

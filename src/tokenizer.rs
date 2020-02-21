@@ -202,8 +202,8 @@ impl fmt::Display for Whitespace {
             Whitespace::Space => f.write_str(" "),
             Whitespace::Newline => f.write_str("\n"),
             Whitespace::Tab => f.write_str("\t"),
-            Whitespace::SingleLineComment(s) => write!(f, "--{}", s),
-            Whitespace::MultiLineComment(s) => write!(f, "/*{}*/", s),
+            Whitespace::SingleLineComment(s) => write!(f, "[SingleLineComment] --{}", s),
+            Whitespace::MultiLineComment(s) => write!(f, "[MultiLineComment] /*{}*/", s),
         }
     }
 }

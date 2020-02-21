@@ -14,6 +14,7 @@
 
 mod data_type;
 mod ddl;
+mod doc;
 mod operator;
 mod query;
 mod value;
@@ -30,6 +31,7 @@ pub use self::query::{
     SetExpr, SetOperator, TableAlias, TableFactor, TableWithJoins, Top, Values,
 };
 pub use self::value::{DateTimeField, Value};
+pub use self::doc::Doc;
 
 struct DisplaySeparated<'a, T>
 where
@@ -474,6 +476,7 @@ pub enum Statement {
         external: bool,
         file_format: Option<FileFormat>,
         location: Option<String>,
+        doc: Doc,
     },
     /// ALTER TABLE
     AlterTable {
@@ -626,6 +629,7 @@ impl fmt::Display for Statement {
                 external,
                 file_format,
                 location,
+                doc: _,
             } => {
                 write!(
                     f,
