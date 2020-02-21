@@ -885,7 +885,7 @@ impl Parser {
     }
 
     pub fn parse_create_external_table(&mut self) -> Result<Statement, ParserError> {
-        let doc = self.doc;
+        let doc = self.pop_doc();
         self.expect_keyword("TABLE")?;
         let table_name = self.parse_object_name()?;
         let (columns, constraints) = self.parse_columns()?;
@@ -953,7 +953,7 @@ impl Parser {
     }
 
     pub fn parse_create_table(&mut self) -> Result<Statement, ParserError> {
-        let doc = self.doc;
+        let doc = self.pop_doc();
         let table_name = self.parse_object_name()?;
         // parse optional column list (schema)
         let (columns, constraints) = self.parse_columns()?;
@@ -982,6 +982,7 @@ impl Parser {
             if let Some(constraint) = self.parse_optional_table_constraint()? {
                 constraints.push(constraint);
             } else if let Some(Token::Word(column_name)) = self.peek_token() {
+                let doc = self.pop_doc();
                 self.next_token();
                 let data_type = self.parse_data_type()?;
                 let collation = if self.parse_keyword("COLLATE") {
@@ -1002,6 +1003,7 @@ impl Parser {
                     data_type,
                     collation,
                     options,
+                    doc,
                 });
             } else {
                 return self.expected("column name or constraint definition", self.peek_token());
@@ -2114,6 +2116,10 @@ impl Parser {
         } else {
             Ok(false)
         }
+    }
+
+    fn pop_doc(&mut self) -> Doc {
+        return mem::replace(&mut self.doc, Doc::new())
     }
 }
 

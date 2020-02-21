@@ -12,7 +12,7 @@
 
 //! AST types specific to CREATE/ALTER variants of [Statement]
 //! (commonly referred to as Data Definition Language, or DDL)
-use super::{display_comma_separated, DataType, Expr, Ident, ObjectName};
+use super::{display_comma_separated, DataType, Doc, Expr, Ident, ObjectName};
 use std::fmt;
 
 /// An `ALTER TABLE` (`Statement::AlterTable`) operation
@@ -100,6 +100,7 @@ pub struct ColumnDef {
     pub data_type: DataType,
     pub collation: Option<ObjectName>,
     pub options: Vec<ColumnOptionDef>,
+    pub doc: Doc,
 }
 
 impl fmt::Display for ColumnDef {

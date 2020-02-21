@@ -36,11 +36,24 @@ impl Doc {
 
   fn parse_single_line_comment(&mut self, text: &String) {
     if text.starts_with("*") {
-      self.lines.push(text[1..].to_string());
+      self.lines.push(Doc::parse_comment_line(text));
     }
   }
 
-  pub fn parse_multi_line_comment(&mut self, text: &String) {
-    self.parse_single_line_comment(text);
+  fn parse_multi_line_comment(&mut self, text: &String) {
+    if text.starts_with("*") {
+      for line in text.lines() {
+        self.lines.push(Doc::parse_comment_line(&line.to_string()))
+      }
+    }
+  }
+
+  fn parse_comment_line(line: &String) -> String {
+    let trimmed = line.trim();
+    if trimmed.starts_with("*") {
+      return trimmed[1..].trim().to_string()
+    } else {
+      return trimmed.to_string()
+    }
   }
 }
