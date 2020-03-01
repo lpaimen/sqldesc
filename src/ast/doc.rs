@@ -56,4 +56,13 @@ impl Doc {
       return trimmed.to_string()
     }
   }
+
+  pub fn doc_string(&self) -> String {
+    self.lines.join("\n")
+  }
+
+  pub fn is_useful(&self) -> bool {
+    self.lines.len() != 0
+  }
+
 }
