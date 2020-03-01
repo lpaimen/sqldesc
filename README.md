@@ -31,7 +31,7 @@ That is, to have Javadoc for SQL. Having the docs somewhere is the first step. T
 Install Rust and cargo. Then:
 
 ```
-cargo run --example sqldesc.rs
+cargo run --example sqldesc.rs sqldesc_sample.sql
 ```
 
 --
