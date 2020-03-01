@@ -1,3 +1,36 @@
+# SQLDESC: SQL description comment parser.
+
+Forked from [sqlparser-rs](https://github.com/andygrove/sqlparser-rs)
+
+Idea is to turn
+```
+--* Contains sample data
+CREATE TABLE sample(
+  id INTEGER PRIMARY KEY,
+  --* key, possible multiple
+  key TEXT NOT NULL,
+  --* any kind of data
+  data TEXT NOT NULL,
+)
+```
+
+into
+
+```
+INSERT INTO sqldesc(type, target, description) VALUES("table", "sample", "Contains sample data");
+INSERT INTO sqldesc(type, target, description) VALUES("column", "sample.key", "key, possible multiple");
+INSERT INTO sqldesc(type, target, description) VALUES("column", "sample.data", "any kind of data");
+```
+
+That is, to have Javadoc for SQL. Having the docs somewhere is the first step. Tooling for later use is also required.
+
+
+... and learn Rust along the way.
+
+README of `sqlparser-rs`:
+
+--
+
 # Extensible SQL Lexer and Parser for Rust
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
