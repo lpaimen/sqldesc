@@ -24,8 +24,17 @@ INSERT INTO sqldesc(type, target, description) VALUES("column", "sample.data", "
 
 That is, to have Javadoc for SQL. Having the docs somewhere is the first step. Tooling for later use is also required.
 
-
 ... and learn Rust along the way.
+
+## Getting started
+
+Install Rust and cargo. Then:
+
+```
+cargo run --example sqldesc.rs
+```
+
+--
 
 README of `sqlparser-rs`:
 

@@ -1,3 +1,6 @@
+
+
+/// Run with `cargo run --example sqldesc` 
 use sqlparser::dialect::GenericDialect;
 use sqlparser::parser::Parser;
 
