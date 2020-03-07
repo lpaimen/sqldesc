@@ -42,6 +42,7 @@ fn parse_create_table_with_defaults() {
             external: false,
             file_format: None,
             location: None,
+            ..
         } => {
             assert_eq!("public.customer", name.to_string());
             assert_eq!(
@@ -57,6 +58,7 @@ fn parse_create_table_with_defaults() {
                                 pg().verified_expr("nextval(public.customer_customer_id_seq)")
                             )
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "store_id".into(),
@@ -66,6 +68,7 @@ fn parse_create_table_with_defaults() {
                             name: None,
                             option: ColumnOption::NotNull,
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "first_name".into(),
@@ -75,6 +78,7 @@ fn parse_create_table_with_defaults() {
                             name: None,
                             option: ColumnOption::NotNull,
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "last_name".into(),
@@ -84,12 +88,14 @@ fn parse_create_table_with_defaults() {
                             name: None,
                             option: ColumnOption::NotNull,
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "email".into(),
                         data_type: DataType::Varchar(Some(50)),
                         collation: None,
                         options: vec![],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "address_id".into(),
@@ -99,6 +105,7 @@ fn parse_create_table_with_defaults() {
                             name: None,
                             option: ColumnOption::NotNull
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "activebool".into(),
@@ -114,6 +121,7 @@ fn parse_create_table_with_defaults() {
                                 option: ColumnOption::NotNull,
                             }
                         ],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "create_date".into(),
@@ -131,6 +139,7 @@ fn parse_create_table_with_defaults() {
                                 option: ColumnOption::NotNull,
                             }
                         ],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "last_update".into(),
@@ -146,6 +155,7 @@ fn parse_create_table_with_defaults() {
                                 option: ColumnOption::NotNull,
                             }
                         ],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "active".into(),
@@ -155,6 +165,7 @@ fn parse_create_table_with_defaults() {
                             name: None,
                             option: ColumnOption::NotNull
                         }],
+                        doc: Doc::new(),
                     },
                 ]
             );

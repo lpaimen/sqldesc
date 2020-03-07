@@ -912,6 +912,7 @@ fn parse_create_table() {
             external: false,
             file_format: None,
             location: None,
+            doc
         } => {
             assert_eq!("uk_cities", name.to_string());
             assert_eq!(
@@ -925,6 +926,7 @@ fn parse_create_table() {
                             name: None,
                             option: ColumnOption::NotNull
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "lat".into(),
@@ -934,12 +936,14 @@ fn parse_create_table() {
                             name: None,
                             option: ColumnOption::Null
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "lng".into(),
                         data_type: DataType::Double,
                         collation: None,
                         options: vec![],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "constrained".into(),
@@ -967,6 +971,7 @@ fn parse_create_table() {
                                 option: ColumnOption::Check(verified_expr("constrained > 0")),
                             }
                         ],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "ref".into(),
@@ -978,12 +983,14 @@ fn parse_create_table() {
                                 foreign_table: ObjectName(vec!["othertable".into()]),
                                 referred_columns: vec!["a".into(), "b".into(),],
                             }
-                        }]
+                        }],
+                        doc: Doc::new(),
                     }
                 ]
             );
             assert!(constraints.is_empty());
             assert_eq!(with_options, vec![]);
+            assert!(!doc.is_useful())
         }
         _ => unreachable!(),
     }
@@ -1048,6 +1055,7 @@ fn parse_create_external_table() {
             external,
             file_format,
             location,
+            ..
         } => {
             assert_eq!("uk_cities", name.to_string());
             assert_eq!(
@@ -1061,6 +1069,7 @@ fn parse_create_external_table() {
                             name: None,
                             option: ColumnOption::NotNull
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "lat".into(),
@@ -1070,12 +1079,14 @@ fn parse_create_external_table() {
                             name: None,
                             option: ColumnOption::Null
                         }],
+                        doc: Doc::new(),
                     },
                     ColumnDef {
                         name: "lng".into(),
                         data_type: DataType::Double,
                         collation: None,
                         options: vec![],
+                        doc: Doc::new(),
                     },
                 ]
             );
