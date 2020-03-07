@@ -19,27 +19,24 @@ struct Opt {
     #[structopt(parse(from_os_str), help = "SQL file to parse")]
     input_file: PathBuf,
 
-    #[structopt(long, help = "Disables INSERT commands")]
-    no_insert: bool,
-
-    #[structopt(long, help = "Disables COMMENT commands")]
-    no_comment: bool,
+    #[structopt(long, help = "Output type, sql or comment", default_value = "comment")]
+    output: String,
 }
 
 fn doc_table(opt: &Opt, name: &ObjectName, doc: &Doc) {
-    if !opt.no_insert {
+    if opt.output == "sql" {
         println!("INSERT INTO sqldesc(type, target, description) VALUES('table', '{}', '{}');", name, doc.doc_string());
     }
-    if !opt.no_comment {
+    if opt.output == "comment" {
         println!("COMMENT ON TABLE {} IS '{}';", name, doc.doc_string());
     }
 }
 
 fn doc_column(opt: &Opt, table: &ObjectName, name: &Ident, doc: &Doc) {
-    if !opt.no_insert {
+    if opt.output == "sql" {
         println!("INSERT INTO sqldesc(type, target, description) VALUES('column', '{}.{}', '{}');", table, name, doc.doc_string());
     }
-    if !opt.no_comment {
+    if opt.output == "comment" {
         println!("COMMENT ON COLUMN {}.{} IS '{}';", table, name, doc.doc_string());
     }
 }
