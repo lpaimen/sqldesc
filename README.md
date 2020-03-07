@@ -2,7 +2,7 @@
 
 Implement SQL description comments.
 
-So if you have [sample.dsql](sample.sql) containing:
+So if you have [sample.sql](sample.sql) containing:
 ```
 /**
  * List of cities in Finland
