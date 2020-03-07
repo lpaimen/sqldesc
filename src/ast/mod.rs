@@ -629,7 +629,7 @@ impl fmt::Display for Statement {
                 external,
                 file_format,
                 location,
-                doc: _,
+                ..
             } => {
                 write!(
                     f,

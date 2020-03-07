@@ -16,7 +16,7 @@ use super::super::tokenizer::Whitespace;
 use super::super::tokenizer::Whitespace::SingleLineComment;
 use super::super::tokenizer::Whitespace::MultiLineComment;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
 pub struct Doc {
   lines: Vec<String>
 }
@@ -42,14 +42,18 @@ impl Doc {
     }
   }
 
-  fn parse_single_line_comment(&mut self, text: &String) {
-    if text.starts_with("*") {
+  fn is_desc(text: &str) -> bool {
+    text.starts_with('*')
+  }
+
+  fn parse_single_line_comment(&mut self, text: &str) {
+    if Doc::is_desc(text) {
       self.lines.push(Doc::parse_comment_line(text));
     }
   }
 
-  fn parse_multi_line_comment(&mut self, text: &String) {
-    if text.starts_with("*") {
+  fn parse_multi_line_comment(&mut self, text: &str) {
+    if Doc::is_desc(text) {
       let mut drop_last = false;
       for (lineno, line) in text.lines().enumerate() {
         if lineno == 0 {
@@ -70,12 +74,12 @@ impl Doc {
     }
   }
 
-  fn parse_comment_line(line: &String) -> String {
+  fn parse_comment_line(line: &str) -> String {
     let trimmed = line.trim();
-    if trimmed.starts_with("*") {
-      return trimmed[1..].trim().to_string()
+    if Doc::is_desc(trimmed) {
+      trimmed[1..].trim().to_string()
     } else {
-      return trimmed.to_string()
+      trimmed.to_string()
     }
   }
 
@@ -84,7 +88,7 @@ impl Doc {
   }
 
   pub fn is_useful(&self) -> bool {
-    self.lines.len() != 0
+    !self.lines.is_empty()
   }
 
 }

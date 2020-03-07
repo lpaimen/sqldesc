@@ -2121,7 +2121,7 @@ impl Parser {
     }
 
     fn pop_doc(&mut self) -> Doc {
-        return mem::replace(&mut self.doc, Doc::new())
+        mem::replace(&mut self.doc, Doc::new())
     }
 
     /** Pass current doc comments over next token */
