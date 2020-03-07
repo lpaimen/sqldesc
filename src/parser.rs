@@ -79,14 +79,16 @@ pub struct Parser {
     /// Documentation being gathered for next token
     next_doc: Doc,
     /// Keep documentation over next non-whitespace token
-    keep_doc: bool,
+    pass_doc_over_token: bool,
 }
 
 impl Parser {
     /// Parse the specified tokens
     pub fn new(tokens: Vec<Token>) -> Self {
-        Parser { tokens, index: 0, doc: Doc::new(), next_doc: Doc::new(), keep_doc: false }
+        Parser { tokens, index: 0, doc: Doc::new(), next_doc: Doc::new(), pass_doc_over_token: false }
     }
+
+
 
     /// Parse a SQL statement and produce an Abstract Syntax Tree (AST)
     pub fn parse_sql(dialect: &dyn Dialect, sql: String) -> Result<Vec<Statement>, ParserError> {
@@ -705,8 +707,8 @@ impl Parser {
                     continue
                 }
                 token => {
-                    if self.keep_doc {
-                        self.keep_doc = false;
+                    if self.pass_doc_over_token {
+                        self.pass_doc_over_token = false;
                     } else {
                         mem::swap(&mut self.doc, &mut self.next_doc);
                         self.next_doc = Doc::new()
@@ -871,7 +873,7 @@ impl Parser {
 
     /// Parse a SQL CREATE statement
     pub fn parse_create(&mut self) -> Result<Statement, ParserError> {
-        self.keep_doc = true;
+        self.pass_doc();
         if self.parse_keyword("TABLE") {
             self.parse_create_table()
         } else if self.parse_keyword("MATERIALIZED") || self.parse_keyword("VIEW") {
@@ -2120,6 +2122,11 @@ impl Parser {
 
     fn pop_doc(&mut self) -> Doc {
         return mem::replace(&mut self.doc, Doc::new())
+    }
+
+    /** Pass current doc comments over next token */
+    fn pass_doc(&mut self) {
+        self.pass_doc_over_token = true
     }
 }
 
