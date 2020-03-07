@@ -26,6 +26,14 @@ impl Doc {
     Doc { lines: Vec::new() }
   }
 
+  pub fn of(lines: &str) -> Self {
+    let mut doc = Doc::new();
+    for line in lines.lines() {
+      doc.lines.push(line.to_string());
+    }
+    doc
+  }
+
   pub fn parse_whitespace(&mut self, whitespace: &Whitespace) {
     match whitespace {
       SingleLineComment(text) => self.parse_single_line_comment(text),
@@ -42,8 +50,22 @@ impl Doc {
 
   fn parse_multi_line_comment(&mut self, text: &String) {
     if text.starts_with("*") {
-      for line in text.lines() {
-        self.lines.push(Doc::parse_comment_line(&line.to_string()))
+      let mut drop_last = false;
+      for (lineno, line) in text.lines().enumerate() {
+        if lineno == 0 {
+          // Use first line only if it contains something
+          let text = Doc::parse_comment_line(&line.to_string());
+          if !text.is_empty() {
+            self.lines.push(text);
+          }
+        } else {
+          drop_last = true;
+          self.lines.push(Doc::parse_comment_line(&line.to_string()))
+        }
+      }
+      if drop_last {
+        // Remove last line
+        self.lines.pop();
       }
     }
   }

@@ -21,7 +21,12 @@ use sqlparser::test_utils::*;
 
 #[test]
 fn parse_create_table_with_defaults() {
-    let sql = "CREATE TABLE public.customer (
+    let sql = "
+            /**
+             * PSQL style comment
+             */
+            CREATE TABLE public.customer (
+            /** Single-line docstring */
             customer_id integer DEFAULT nextval(public.customer_customer_id_seq),
             store_id smallint NOT NULL,
             first_name character varying(45) NOT NULL,
@@ -42,7 +47,7 @@ fn parse_create_table_with_defaults() {
             external: false,
             file_format: None,
             location: None,
-            ..
+            doc
         } => {
             assert_eq!("public.customer", name.to_string());
             assert_eq!(
@@ -58,7 +63,7 @@ fn parse_create_table_with_defaults() {
                                 pg().verified_expr("nextval(public.customer_customer_id_seq)")
                             )
                         }],
-                        doc: Doc::new(),
+                        doc: Doc::of("Single-line docstring"),
                     },
                     ColumnDef {
                         name: "store_id".into(),
@@ -187,6 +192,7 @@ fn parse_create_table_with_defaults() {
                     },
                 ]
             );
+            assert_eq!(doc.doc_string(), "PSQL style comment")
         }
         _ => unreachable!(),
     }

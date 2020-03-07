@@ -888,8 +888,12 @@ fn parse_extract() {
 
 #[test]
 fn parse_create_table() {
-    let sql = "CREATE TABLE uk_cities (\
+    let sql = "--* List of UK cities
+               CREATE TABLE uk_cities (\
+               --* City name
+               --* Names are not localized so \"London\", not \"Lontoo\" as in Finland
                name VARCHAR(100) NOT NULL,\
+               -- This is just a comment
                lat DOUBLE NULL,\
                lng DOUBLE,
                constrained INT NULL CONSTRAINT pkey PRIMARY KEY NOT NULL UNIQUE CHECK (constrained > 0),
@@ -926,7 +930,7 @@ fn parse_create_table() {
                             name: None,
                             option: ColumnOption::NotNull
                         }],
-                        doc: Doc::new(),
+                        doc: Doc::of("City name\nNames are not localized so \"London\", not \"Lontoo\" as in Finland"),
                     },
                     ColumnDef {
                         name: "lat".into(),
@@ -990,7 +994,7 @@ fn parse_create_table() {
             );
             assert!(constraints.is_empty());
             assert_eq!(with_options, vec![]);
-            assert!(!doc.is_useful())
+            assert_eq!(doc.doc_string(), "List of UK cities")
         }
         _ => unreachable!(),
     }
